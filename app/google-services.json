@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "318252300228",
+    "project_id": "eatnow-project-c5f3b",
+    "storage_bucket": "eatnow-project-c5f3b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:318252300228:android:c9434614f409b015779691",
+        "android_client_info": {
+          "package_name": "com.example.eatnow"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZFUiffCkh_qk2C_c3SVqfG49ytEpuS6c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

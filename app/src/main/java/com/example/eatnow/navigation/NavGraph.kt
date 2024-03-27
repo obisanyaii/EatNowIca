@@ -26,7 +26,7 @@ fun SetupNavigationGraph(
         composable(
             route = Route.Login.route
         ){
-            LoginScreen(navController)
+            LoginScreen()
         }
     }
 }

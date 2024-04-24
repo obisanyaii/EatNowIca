@@ -1,4 +1,4 @@
-package com.example.eatnow
+package com.example.eatnow.ui.theme.pages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -8,8 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -25,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.eatnow.R
 import com.example.eatnow.navigation.Route
 import com.example.eatnow.ui.theme.EatNowTheme
 
@@ -45,7 +49,6 @@ fun LandingPageActivity(navController: NavController){
                 Column (
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1.5f)
                         .padding(10.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -68,14 +71,14 @@ fun LandingPageActivity(navController: NavController){
                 Column (
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(4f),
+                        .weight(3.4f),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ){
                     Image(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(45.dp),
+                            .padding(40.dp),
                         painter = painterResource(id = R.drawable.chef),
                         contentDescription = "Chef"
                     )
@@ -84,21 +87,30 @@ fun LandingPageActivity(navController: NavController){
                 Column (
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.Black)
-                        .weight(0.7f),
+                        .padding(20.dp)
+                        .weight(1f),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ){
-                    ElevatedButton(
-                        colors = ButtonDefaults.buttonColors(Color.White),
+                    Button(
+                        colors = ButtonDefaults.buttonColors(Color.Blue),
+                        modifier = Modifier.fillMaxWidth(),
                         onClick = {
                             navController.navigate(Route.Login.route)
                         }
                     ) {
                         Text(
                             text = "Get Started",
-                            style = TextStyle(fontSize = 26.sp),
-                            color = Color.Black
+                            style = TextStyle(fontSize = 20.sp),
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                        // Inner content including an icon and a text label
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowRight,
+                            contentDescription = "Favorite",
+                            modifier = Modifier.size(20.dp),
+                            tint = Color.White
                         )
                     }
                 }

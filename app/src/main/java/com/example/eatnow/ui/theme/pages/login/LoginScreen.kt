@@ -1,5 +1,6 @@
 package com.example.eatnow.ui.theme.pages.login
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,11 +19,13 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -49,7 +53,8 @@ import com.example.eatnow.navigation.Route
 
 @Composable
 fun LoginScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
     var username by remember{
         mutableStateOf("")
@@ -59,6 +64,8 @@ fun LoginScreen(
         mutableStateOf("")
     }
 
+
+    val localContest = LocalContext.current
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(id = R.drawable.login_background),
@@ -102,12 +109,24 @@ fun LoginScreen(
 
                 })
 
-            LoginFooter(
-                navController,
-               onSignInClick = {},
-                onSignUpClick = {}
+            if(viewModel.isLoading) {
+                CircularProgressIndicator()
+            } else {
+                LoginFooter(
+                    navController,
+                    onSignInClick = {
+                        viewModel.signInWithEmailAndPassword(username,password) {
+                            navController.navigate(Route.HomePageScreen.route)
+                        }
+                    },
+                    onSignUpClick = {}
 
-            )
+                )
+            }
+
+            if(viewModel.loginErr.isNotEmpty()) {
+                Toast.makeText(localContest, viewModel.loginErr, Toast.LENGTH_SHORT).show()
+            }
 
 
         }
@@ -202,7 +221,8 @@ fun LoginFooter(
         Button(
             colors = ButtonDefaults.buttonColors(Color.Blue),
             onClick = onSignInClick,
-            modifier=Modifier.fillMaxWidth()
+            modifier= Modifier
+                .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.primary)
         ) {
             Text(text = "Sign In")
@@ -243,7 +263,14 @@ fun DemoField(value: String,
         visualTransformation = visualTransformation,
         keyboardOptions = keyboardOptions,
         leadingIcon = leadingIcon,
-        trailingIcon = trailingIcon
+        trailingIcon = trailingIcon,
+        colors = TextFieldDefaults.colors(
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black,
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White
+
+        )
     )
 }
 

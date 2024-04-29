@@ -102,9 +102,10 @@ fun SignupScreen(
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Button(
                     onClick = {
-                        onSignInClick2(
-                            email, password
-                        )
+                              navController.navigate(Route.HomePageScreen.route)
+//                        onSignInClick2(
+//                            email, password
+//                        )
                     },
                     modifier=Modifier.fillMaxWidth()
                 ) {

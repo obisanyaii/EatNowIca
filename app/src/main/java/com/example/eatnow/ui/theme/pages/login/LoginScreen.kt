@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -66,31 +67,10 @@ fun LoginScreen(
 
 
     val localContest = LocalContext.current
-    Box(modifier = Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(id = R.drawable.login_background),
-            contentDescription = "Login background",
-            modifier = Modifier
-                .fillMaxSize()
-                .blur(6.dp),
-            contentScale = ContentScale.Crop
-        )
-        Box(modifier= Modifier
-            .fillMaxSize()
-            .padding(27.dp)
+    Box(
+        modifier = Modifier.fillMaxSize()
             .background(Color.White)
-//            .alpha(0.6f)
-//            .clip(
-//                CutCornerShape(
-//                    topStart = 8.dp,
-//                    topEnd = 18.dp,
-//                    bottomStart = 18.dp,
-//                    bottomEnd = 8.dp
-//                )
-//            )
-//            .background(MaterialTheme.colorScheme.background)
-        )
-
+    ) {
         Column (
             Modifier
                 .fillMaxSize()
@@ -167,7 +147,7 @@ fun LoginHeader() {
             fontSize=22.sp,
             fontWeight = FontWeight.Bold
         )
-        Text(text = "sign in below to continue...",
+        Text(text = "Sign in below to continue...",
             fontSize = 18.sp,
             fontWeight=FontWeight.SemiBold)
 
@@ -181,9 +161,9 @@ fun LoginFields(username: String, password: String,
                 onPasswordChange: (String) -> Unit,
                 onForgotPasswordClick: () -> Unit
 ){
-    Column {
+    Column{
         DemoField(value = username,
-            label ="Username",
+            label ="Email",
             placeholder = "Enter your Email Address",
             onValueChange = onUsernameChange,
             leadingIcon = {
@@ -219,11 +199,11 @@ fun LoginFooter(
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Button(
-            colors = ButtonDefaults.buttonColors(Color.Blue),
+            colors = ButtonDefaults.buttonColors(Color.Black),
             onClick = onSignInClick,
             modifier= Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.primary)
+                .fillMaxWidth(),
+            shape = RectangleShape
         ) {
             Text(text = "Sign In")
         }
@@ -232,7 +212,8 @@ fun LoginFooter(
                 text = "New user? click here to register",
                 modifier = Modifier.clickable {
                     navController.navigate(Route.Signup.route)
-                }
+                },
+                color = Color.Black
             )
         }
     }
@@ -274,10 +255,11 @@ fun DemoField(value: String,
     )
 }
 
-
-
 @Preview(showBackground = true, showSystemUi= true)
 @Composable
 fun PrevLoginScreen(){
-    LoginScreen(rememberNavController())
+    LoginScreen(
+        rememberNavController(),
+        androidx.lifecycle.viewmodel.compose.viewModel()
+    )
 }

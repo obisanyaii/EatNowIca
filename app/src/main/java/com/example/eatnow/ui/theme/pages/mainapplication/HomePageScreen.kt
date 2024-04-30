@@ -1,6 +1,7 @@
 package com.example.eatnow.ui.theme.pages.mainapplication
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -39,11 +40,16 @@ import androidx.navigation.compose.rememberNavController
 import com.example.eatnow.R
 import com.example.eatnow.navigation.Route
 import com.example.eatnow.ui.theme.EatNowTheme
+import com.example.eatnow.ui.theme.FoodList
+import com.example.eatnow.ui.theme.FoodName
+import com.example.eatnow.ui.theme.pages.login.LoginViewModel
+import com.example.eatnow.ui.theme.pages.signup.SignupViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomePageScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ){
     EatNowTheme {
         // A surface container using the 'background' color from the theme
@@ -93,14 +99,16 @@ fun HomePageScreen(
                                 ){
                                     Icon (
                                         imageVector = Icons.Filled.ShoppingCart,
-                                        contentDescription = "Shopping cart"
+                                        contentDescription = "History"
                                     )
+                                    Text(text = "History")
                                 }
 
                                 Column (
                                     modifier = Modifier
                                         .weight(1f)
                                         .clickable {
+                                            viewModel.signOut()
                                             navController.navigate(Route.Login.route)
                                         },
                                     horizontalAlignment = Alignment.End
@@ -109,6 +117,7 @@ fun HomePageScreen(
                                         imageVector = Icons.Filled.ExitToApp,
                                         contentDescription = "Log out"
                                     )
+                                    Text(text = "Logout")
                                 }
                             }
 
@@ -121,6 +130,7 @@ fun HomePageScreen(
                         .fillMaxWidth()
                         .weight(7f)
                         .padding(0.dp, 40.dp)
+                        .verticalScroll(rememberScrollState())
                 ) {
                     // Body
                     Text(
@@ -146,17 +156,20 @@ fun HomePageScreen(
                         modifier = Modifier
                             .padding(0.dp, 40.dp)
                     )
-                    
 
-                    // List food below
-                    repeat(50) {
+                    val foods = FoodList.foodList
+
+                    for (food in foods) {
                         Column (
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(0.dp, 0.dp, 0.dp, 15.dp)
                                 .clickable {
+//                                    Log.d("TAG args navigate", "${Route.DetailsPageScreen.route}/${foods.indexOf(food)}")
+//                                    Log.d("TAG args navigate", "${Route.DetailsPageScreen.route}/${foods.indexOf(food)}")
+//                                    Log.d("TAG args index value", foods.indexOf(food).toString())
                                     navController.navigate(
-                                        Route.DetailsPageScreen.route
+                                        route = "${Route.DetailsPageScreen.route}/?index=${foods.indexOf(food)}"
                                     )
                                 }
                         ) {
@@ -174,7 +187,7 @@ fun HomePageScreen(
                                         .weight(5f)
                                 ){
                                     Image(
-                                        painter = painterResource(id = R.drawable.naijajollof),
+                                        painter = painterResource(id = food.imageResId),
                                         contentDescription = "Food image",
                                         modifier = Modifier
                                             .size(200.dp)
@@ -187,7 +200,13 @@ fun HomePageScreen(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ){
                                     Text(
-                                        text = "Price: \n45.00 "
+                                        text = food.name,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = food.description +
+                                                "\n\nPrice: " +
+                                                "\n£" + food.price
                                     )
                                 }
                             }

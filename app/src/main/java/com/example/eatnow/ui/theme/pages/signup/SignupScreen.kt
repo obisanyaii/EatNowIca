@@ -1,6 +1,7 @@
 package com.example.eatnow.ui.theme.pages.signup
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,9 +15,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -29,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -41,6 +45,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.eatnow.R
 import com.example.eatnow.navigation.Route
+import com.example.eatnow.ui.theme.pages.login.LoginViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -48,7 +53,8 @@ import com.google.firebase.auth.auth
 
 @Composable
 fun SignupScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: SignupViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
 
     var firstname by remember{
@@ -72,7 +78,10 @@ fun SignupScreen(
     }
 
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier.fillMaxSize()
+            .background(Color.White)
+    ) {
         Column (
             Modifier
                 .fillMaxSize()
@@ -87,6 +96,7 @@ fun SignupScreen(
                 lastname,
                 email,
                 phonenumber,
+                password,
                 onFirstNameChange = {
                     firstname=it
                 }, onLastNameChange = {
@@ -97,19 +107,23 @@ fun SignupScreen(
                 },
                 onPhoneNumberChange = {
                     phonenumber=it
+                },
+                onPasswordChange = {
+                    password=it
                 })
 
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Button(
                     onClick = {
-                              navController.navigate(Route.HomePageScreen.route)
-//                        onSignInClick2(
-//                            email, password
-//                        )
+                        viewModel.createUserWithEmailAndPassword(firstname, lastname, phonenumber, email, password) {
+                            navController.navigate(Route.HomePageScreen.route)
+                        }
                     },
-                    modifier=Modifier.fillMaxWidth()
+                    colors = ButtonDefaults.buttonColors(Color.Black),
+                    modifier=Modifier.fillMaxWidth(),
+                    shape = RectangleShape
                 ) {
-                    Text(text = "Register")
+                    Text(text = "Sign up")
                 }
 //                TextButton(onClick = onSignUpClick*/) {
                     Text(
@@ -174,10 +188,12 @@ fun SignupFields(
     lastname: String,
     email: String,
     phonenumber : String,
-                onFirstNameChange: (String) -> Unit,
-                onLastNameChange: (String) -> Unit,
-                onEmailChange: (String) -> Unit,
-                onPhoneNumberChange: (String) -> Unit
+    password: String,
+    onFirstNameChange: (String) -> Unit,
+    onLastNameChange: (String) -> Unit,
+    onEmailChange: (String) -> Unit,
+    onPhoneNumberChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit
 ){
     Column(
         modifier = Modifier
@@ -199,7 +215,6 @@ fun SignupFields(
             label = "Lastname",
             placeholder = "Enter your lastname",
             onValueChange =onLastNameChange,
-            visualTransformation = PasswordVisualTransformation(),
             leadingIcon = {
                 Icon(
                     Icons.Default.Person,
@@ -211,11 +226,22 @@ fun SignupFields(
         Spacer(modifier = Modifier.height(8.dp))
 
         DemoField(
+            value = phonenumber,
+            label = "Phone number",
+            placeholder = "Enter your phone number",
+            onValueChange =onPhoneNumberChange,
+            leadingIcon = {
+                Icon(Icons.Default.Phone, contentDescription ="Phone number" )
+            }
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        DemoField(
             value = email,
             label = "Email",
             placeholder = "Enter your email",
             onValueChange =onEmailChange,
-            visualTransformation = PasswordVisualTransformation(),
             leadingIcon = {
                 Icon(Icons.Default.Email, contentDescription ="Email" )
             }
@@ -224,13 +250,13 @@ fun SignupFields(
         Spacer(modifier = Modifier.height(8.dp))
 
         DemoField(
-            value = phonenumber,
-            label = "Phone number",
-            placeholder = "Enter your phone number",
-            onValueChange =onPhoneNumberChange,
+            value = password,
+            label = "Password",
+            placeholder = "Enter your password",
+            onValueChange =onPasswordChange,
             visualTransformation = PasswordVisualTransformation(),
             leadingIcon = {
-                Icon(Icons.Default.Phone, contentDescription ="Phone number" )
+                Icon(Icons.Default.Lock, contentDescription ="Password" )
             }
         )
     }
@@ -242,7 +268,6 @@ fun LoginFooter(
     navController: NavController,
     onSignInClick: () -> Unit,
     onSignUpClick: () -> Unit
-
 ){
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {

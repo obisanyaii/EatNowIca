@@ -1,6 +1,7 @@
 package com.example.eatnow.ui.theme.pages.mainapplication
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -23,6 +24,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
@@ -33,11 +35,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -49,12 +53,19 @@ import androidx.navigation.compose.rememberNavController
 import com.example.eatnow.R
 import com.example.eatnow.navigation.Route
 import com.example.eatnow.ui.theme.EatNowTheme
+import com.example.eatnow.ui.theme.FoodList
+import com.example.eatnow.ui.theme.FoodName
+import com.example.eatnow.ui.theme.pages.login.LoginViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DetailsPageScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    initialFood : FoodName
 ){
+    var food by remember { mutableStateOf(initialFood) }
+    Log.d("TAG args", food.name)
     EatNowTheme {
         // A surface container using the 'background' color from the theme
         Surface(
@@ -103,15 +114,16 @@ fun DetailsPageScreen(
                                 ){
                                     Icon (
                                         imageVector = Icons.Filled.ShoppingCart,
-                                        contentDescription = "Shopping cart"
+                                        contentDescription = "History"
                                     )
+                                    Text(text = "History")
                                 }
 
                                 Column (
                                     modifier = Modifier
                                         .weight(1f)
                                         .clickable {
-                                            // Logout
+                                            viewModel.signOut()
                                             navController.navigate(Route.Login.route)
                                         },
                                     horizontalAlignment = Alignment.End
@@ -120,6 +132,7 @@ fun DetailsPageScreen(
                                         imageVector = Icons.Filled.ExitToApp,
                                         contentDescription = "Log out"
                                     )
+                                    Text(text = "Logout")
                                 }
                             }
 
@@ -145,7 +158,7 @@ fun DetailsPageScreen(
                                 .weight(3f)
                         ) {
                             Text(
-                                text = "Rice",
+                                text = food.name,
                                 fontWeight = FontWeight.Bold,
                                 style = androidx.compose.ui.text.TextStyle(fontSize = 40.sp)
                             )
@@ -184,7 +197,7 @@ fun DetailsPageScreen(
                             .width(3.dp)
                     )
                     Image(
-                        painter = painterResource(id = R.drawable.egusisoup),
+                        painter = painterResource(id = food.imageResId),
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -196,6 +209,8 @@ fun DetailsPageScreen(
                             .height(40.dp)
                             .width(3.dp)
                     )
+
+                    Text(text = food.description)
 
                     // Details
                     Text(
@@ -211,9 +226,8 @@ fun DetailsPageScreen(
                             .border(2.dp, Color.Red)
                     )
 
-                    val price = 40
                     Text(
-                        text = "Price: $price.00 £",
+                        text = "Price: £${food.price}",
                         style = androidx.compose.ui.text.TextStyle(
                             fontSize = 20.sp
                         )
@@ -255,11 +269,15 @@ fun DetailsPageScreen(
                     ) {
 
                         // Button
-                        ElevatedButton(
-                            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                        Button(
+                            colors = ButtonDefaults.buttonColors(Color.Black),
                             onClick = {
                                 navController.navigate(Route.SuccessPageScreen.route)
-                            }) {
+                            },
+                            modifier= Modifier
+                                .fillMaxWidth(),
+                            shape = RectangleShape
+                        ) {
                             Text(
                                 text = "Place order",
                                 fontWeight = FontWeight.Bold
@@ -286,6 +304,13 @@ fun DetailsPageScreen(
 @Preview(showBackground = true)
 fun PreviewDetailsPageScreen(){
     DetailsPageScreen(
-        rememberNavController()
+        rememberNavController(),
+        LoginViewModel(),
+        initialFood = FoodName(
+            R.drawable.friedchicken,
+            name = "Fried Chicken",
+            description = "Food for thought",
+            price = "5.00"
+        )
     )
 }

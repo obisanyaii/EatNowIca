@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -78,7 +79,7 @@ fun LandingPageActivity(navController: NavController){
                     Image(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(40.dp),
+                            .padding(60.dp),
                         painter = painterResource(id = R.drawable.chef),
                         contentDescription = "Chef"
                     )
@@ -93,24 +94,18 @@ fun LandingPageActivity(navController: NavController){
                     horizontalAlignment = Alignment.CenterHorizontally
                 ){
                     Button(
-                        colors = ButtonDefaults.buttonColors(Color.Blue),
+                        colors = ButtonDefaults.buttonColors(Color.Black),
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
                             navController.navigate(Route.Login.route)
-                        }
+                        },
+                        shape = RectangleShape
                     ) {
                         Text(
                             text = "Get Started",
                             style = TextStyle(fontSize = 20.sp),
                             fontWeight = FontWeight.Bold,
                             color = Color.White
-                        )
-                        // Inner content including an icon and a text label
-                        Icon(
-                            imageVector = Icons.Default.KeyboardArrowRight,
-                            contentDescription = "Favorite",
-                            modifier = Modifier.size(20.dp),
-                            tint = Color.White
                         )
                     }
                 }

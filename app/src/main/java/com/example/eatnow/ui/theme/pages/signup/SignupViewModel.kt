@@ -1,4 +1,4 @@
-package com.example.eatnow.ui.theme.pages.login
+package com.example.eatnow.ui.theme.pages.signup
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -13,36 +13,44 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import kotlinx.coroutines.launch
 
-class LoginViewModel : ViewModel() {
-    //    val loadingState = MutableStateFlow(LoadingState.IDLE)
+class SignupViewModel : ViewModel() {
     private val auth = Firebase.auth
     private val _loading = MutableLiveData(false)
     val loading: LiveData<Boolean> = _loading
-
     var isLoading by mutableStateOf(false)
-    var loginErr by mutableStateOf("")
-    var isLogout by mutableStateOf(false)
+    var signupErr by mutableStateOf("")
 
-    fun signInWithEmailAndPassword(email: String, password: String, home: () -> Unit) =
-        viewModelScope.launch {
+    fun createUserWithEmailAndPassword(
+        firstname : String,
+        lastname : String,
+        phoneNumber: String,
+        email: String,
+        password: String,
+        home: () -> Unit,
+    ) = viewModelScope.launch {
+        if (isLoading == false) {
             isLoading = true
-            auth.signInWithEmailAndPassword(email, password)
+
+            auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Log.d("FB", "signin good : ${task.result}")
-                        isLogout = false
+                        createUser(firstname, lastname, phoneNumber)
                         home()
-                    }
-                    isLoading = false
-                }.addOnFailureListener { result ->
-                    Log.d("FB", "signin bad : ${result.message}")
-                    loginErr = result.message.toString()
-                }
-        }
 
-    fun signOut() {
-        auth.signOut()
-        isLogout = true
+                        Log.d("create suc", "${task.result}")
+                    }
+
+                    isLoading = false
+                }.addOnFailureListener { task ->
+                    Log.d("fail", "${task.message}")
+                    signupErr = task.message.toString()
+                }
+
+        }
+    }
+
+    fun createUser(firstname: String, lastname: String, phoneNumber: String) {
+
     }
 
 }

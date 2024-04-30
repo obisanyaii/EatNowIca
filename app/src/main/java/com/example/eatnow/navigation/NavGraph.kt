@@ -13,6 +13,7 @@ import com.example.eatnow.ui.theme.pages.LandingPageActivity
 import com.example.eatnow.ui.theme.pages.login.LoginScreen
 import com.example.eatnow.ui.theme.pages.login.LoginViewModel
 import com.example.eatnow.ui.theme.pages.mainapplication.DetailsPageScreen
+import com.example.eatnow.ui.theme.pages.mainapplication.HistoryPageScreen
 import com.example.eatnow.ui.theme.pages.mainapplication.HomePageScreen
 import com.example.eatnow.ui.theme.pages.mainapplication.SuccessPageScreen
 import com.example.eatnow.ui.theme.pages.signup.SignupScreen
@@ -67,6 +68,12 @@ fun SetupNavigationGraph(
         }
 
         composable(
+            route = Route.HistoryPageScreen.route
+        ){
+            HistoryPageScreen(navController)
+        }
+
+        composable(
             route = Route.DetailsPageScreen.route+"/{index}"
         ){
             var index = navController.previousBackStackEntry?.arguments?.getString("index")?.toIntOrNull() ?: 0
@@ -75,7 +82,7 @@ fun SetupNavigationGraph(
             if (food != null) {
                 DetailsPageScreen(
                     navController,
-                    LoginViewModel(),add
+                    LoginViewModel(),
                     food
                 )
             } else {

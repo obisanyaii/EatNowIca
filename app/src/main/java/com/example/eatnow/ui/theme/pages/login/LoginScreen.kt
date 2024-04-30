@@ -205,7 +205,7 @@ fun LoginFooter(
                 .fillMaxWidth(),
             shape = RectangleShape
         ) {
-            Text(text = "Sign In")
+            Text(text = "Sign In", color = Color.White)
         }
         TextButton(onClick = onSignUpClick) {
             Text(

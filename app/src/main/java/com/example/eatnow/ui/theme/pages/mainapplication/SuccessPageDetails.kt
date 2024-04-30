@@ -3,6 +3,7 @@ package com.example.eatnow.ui.theme.pages.mainapplication
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,11 +36,13 @@ import androidx.navigation.compose.rememberNavController
 import com.example.eatnow.R
 import com.example.eatnow.navigation.Route
 import com.example.eatnow.ui.theme.EatNowTheme
+import com.example.eatnow.ui.theme.pages.login.LoginViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SuccessPageScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ){
     EatNowTheme {
         // A surface container using the 'background' color from the theme
@@ -49,6 +53,7 @@ fun SuccessPageScreen(
 
             Column(
                 Modifier
+                    .background(Color.White)
                     .verticalScroll(rememberScrollState())
                     .padding(20.dp)
                     .fillMaxSize(),
@@ -67,6 +72,9 @@ fun SuccessPageScreen(
                         Column (
                             modifier = Modifier
                                 .weight(1f)
+                                .clickable {
+                                    navController.navigate(Route.HomePageScreen.route)
+                                }
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.catering_logo),
@@ -83,28 +91,35 @@ fun SuccessPageScreen(
                             Row{
                                 Column (
                                     modifier = Modifier
-                                        .weight(2f),
+                                        .weight(2f)
+                                        .clickable {
+                                            navController.navigate(Route.HistoryPageScreen.route)
+                                        },
                                     horizontalAlignment = Alignment.End
                                 ){
                                     Icon (
                                         imageVector = Icons.Filled.ShoppingCart,
-                                        contentDescription = "Shopping cart"
+                                        contentDescription = "History",
+                                        tint = Color.Black
                                     )
+                                    Text(text = "History", color = Color.Black)
                                 }
 
                                 Column (
                                     modifier = Modifier
                                         .weight(1f)
                                         .clickable {
-                                            // Logout
+                                            viewModel.signOut()
                                             navController.navigate(Route.Login.route)
                                         },
                                     horizontalAlignment = Alignment.End
                                 ){
                                     Icon (
                                         imageVector = Icons.Filled.ExitToApp,
-                                        contentDescription = "Log out"
+                                        contentDescription = "Log out",
+                                        tint = Color.Black
                                     )
+                                    Text(text = "Logout", color = Color.Black)
                                 }
                             }
 
@@ -134,7 +149,8 @@ fun SuccessPageScreen(
                     )
 
                     Text(
-                        text = "Order placed successfully"
+                        text = "Order placed successfully",
+                        color = Color.Black
                     )
 
                     Spacer(
@@ -149,7 +165,8 @@ fun SuccessPageScreen(
                                 navController.navigate(Route.HomePageScreen.route)
                             },
                         text = "Return back home",
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
                     )
                 }
 

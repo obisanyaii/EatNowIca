@@ -7,4 +7,5 @@ sealed class Route (val route :  String){
     data object HomePageScreen : Route(route = "HomePageScreen")
     data object SuccessPageScreen : Route(route = "SuccessPageScreen")
     data object DetailsPageScreen : Route(route = "DetailsPageScreen/{index}")
+    data object HistoryPageScreen : Route(route = "HistoryPageScreen")
 }

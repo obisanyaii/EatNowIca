@@ -4,6 +4,7 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,24 +18,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -44,7 +39,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,18 +46,24 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.eatnow.R
 import com.example.eatnow.navigation.Route
+import com.example.eatnow.room_impl.entity.Orders
+import com.example.eatnow.room_impl.viewmodel.RecordsViewModel
 import com.example.eatnow.ui.theme.EatNowTheme
-import com.example.eatnow.ui.theme.FoodList
 import com.example.eatnow.ui.theme.FoodName
 import com.example.eatnow.ui.theme.pages.login.LoginViewModel
+import com.google.firebase.auth.FirebaseAuth
+import kotlin.random.Random
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DetailsPageScreen(
     navController: NavController,
     viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-    initialFood : FoodName
+    initialFood : FoodName,
+    recordsViewModel: RecordsViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ){
+    val auth = FirebaseAuth.getInstance()
+
     var food by remember { mutableStateOf(initialFood) }
     Log.d("TAG args", food.name)
     EatNowTheme {
@@ -75,8 +75,9 @@ fun DetailsPageScreen(
 
             Column(
                 Modifier
+                    .background(Color.White)
                     .verticalScroll(rememberScrollState())
-                    .padding(20.dp)
+                    .padding(20.dp, 0.dp, 20.dp, 0.dp)
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -93,6 +94,9 @@ fun DetailsPageScreen(
                         Column (
                             modifier = Modifier
                                 .weight(1f)
+                                .clickable {
+                                    navController.navigate(Route.HomePageScreen.route)
+                                }
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.catering_logo),
@@ -109,14 +113,18 @@ fun DetailsPageScreen(
                             Row{
                                 Column (
                                     modifier = Modifier
-                                        .weight(2f),
+                                        .weight(2f)
+                                        .clickable {
+                                            navController.navigate(Route.HistoryPageScreen.route)
+                                        },
                                     horizontalAlignment = Alignment.End
                                 ){
                                     Icon (
                                         imageVector = Icons.Filled.ShoppingCart,
-                                        contentDescription = "History"
+                                        contentDescription = "History",
+                                        tint = Color.Black
                                     )
-                                    Text(text = "History")
+                                    Text(text = "History", color = Color.Black)
                                 }
 
                                 Column (
@@ -130,9 +138,10 @@ fun DetailsPageScreen(
                                 ){
                                     Icon (
                                         imageVector = Icons.Filled.ExitToApp,
-                                        contentDescription = "Log out"
+                                        contentDescription = "Log out",
+                                        tint = Color.Black
                                     )
-                                    Text(text = "Logout")
+                                    Text(text = "Logout", color = Color.Black)
                                 }
                             }
 
@@ -160,7 +169,8 @@ fun DetailsPageScreen(
                             Text(
                                 text = food.name,
                                 fontWeight = FontWeight.Bold,
-                                style = androidx.compose.ui.text.TextStyle(fontSize = 40.sp)
+                                style = androidx.compose.ui.text.TextStyle(fontSize = 40.sp),
+                                color = Color.Black
                             )
                         }
                         Column (
@@ -210,13 +220,15 @@ fun DetailsPageScreen(
                             .width(3.dp)
                     )
 
-                    Text(text = food.description)
+                    Text(text = food.description,
+                        color = Color.Black)
 
                     // Details
                     Text(
                         text = "Details",
                         fontWeight = FontWeight.Bold,
-                        style = androidx.compose.ui.text.TextStyle(fontSize = 30.sp)
+                        style = androidx.compose.ui.text.TextStyle(fontSize = 30.sp),
+                        color = Color.Black
                     )
 
                     Spacer(
@@ -230,32 +242,30 @@ fun DetailsPageScreen(
                         text = "Price: £${food.price}",
                         style = androidx.compose.ui.text.TextStyle(
                             fontSize = 20.sp
-                        )
-                    )
-
-                    var quantity by remember { mutableIntStateOf(1) }
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = quantity.toString(),
-                        onValueChange = { newQuantity ->
-                            quantity = newQuantity.toIntOrNull() ?: 1
-                        },
-                        label = {
-                            Text(text = "Quantity")
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number
                         ),
-                        trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Filled.Create,
-                                contentDescription = "icon"
-                            )
-                        }
+                        color = Color.Black
                     )
-
-
-
+//
+//                    var quantity by remember { mutableIntStateOf(1) }
+//                    OutlinedTextField(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        value = quantity.toString(),
+//                        onValueChange = { newQuantity ->
+//                            quantity = newQuantity.toIntOrNull() ?: 1
+//                        },
+//                        label = {
+//                            Text(text = "Quantity")
+//                        },
+//                        keyboardOptions = KeyboardOptions(
+//                            keyboardType = KeyboardType.Number
+//                        ),
+//                        trailingIcon = {
+//                            Icon(
+//                                imageVector = Icons.Filled.Create,
+//                                contentDescription = "icon"
+//                            )
+//                        }
+//                    )
 
                     Spacer(
                         modifier = Modifier
@@ -272,6 +282,18 @@ fun DetailsPageScreen(
                         Button(
                             colors = ButtonDefaults.buttonColors(Color.Black),
                             onClick = {
+                                // Room : Add to database
+                                recordsViewModel.addOrder(
+                                    Orders(
+                                        Random.nextInt(),
+                                        auth.currentUser?.email!!,
+                                        food.price,
+                                        food.name,
+                                        food.description,
+                                    )
+                                )
+
+                                // Navigate to success page
                                 navController.navigate(Route.SuccessPageScreen.route)
                             },
                             modifier= Modifier
@@ -280,7 +302,8 @@ fun DetailsPageScreen(
                         ) {
                             Text(
                                 text = "Place order",
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
                             )
                         }
 

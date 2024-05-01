@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.eatnow.Food
 import com.example.eatnow.R
 import com.example.eatnow.navigation.Route
 import com.example.eatnow.room_impl.entity.Orders
@@ -59,13 +60,13 @@ import kotlin.random.Random
 fun DetailsPageScreen(
     navController: NavController,
     viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-    initialFood : FoodName,
+    initialFood : Food,
     recordsViewModel: RecordsViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ){
     val auth = FirebaseAuth.getInstance()
 
     var food by remember { mutableStateOf(initialFood) }
-    Log.d("TAG args", food.name)
+    Log.d("TAG args", food.title)
     EatNowTheme {
         // A surface container using the 'background' color from the theme
         Surface(
@@ -167,7 +168,7 @@ fun DetailsPageScreen(
                                 .weight(3f)
                         ) {
                             Text(
-                                text = food.name,
+                                text = food.title,
                                 fontWeight = FontWeight.Bold,
                                 style = androidx.compose.ui.text.TextStyle(fontSize = 40.sp),
                                 color = Color.Black
@@ -207,7 +208,7 @@ fun DetailsPageScreen(
                             .width(3.dp)
                     )
                     Image(
-                        painter = painterResource(id = food.imageResId),
+                        painter = painterResource(id = food.imgResources),
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -220,7 +221,7 @@ fun DetailsPageScreen(
                             .width(3.dp)
                     )
 
-                    Text(text = food.description,
+                    Text(text = food.descAmountCharge,
                         color = Color.Black)
 
                     // Details
@@ -287,9 +288,9 @@ fun DetailsPageScreen(
                                     Orders(
                                         Random.nextInt(),
                                         auth.currentUser?.email!!,
-                                        food.price,
-                                        food.name,
-                                        food.description,
+                                        food.price.toString(),
+                                        food.descAmountCharge,
+                                        "",
                                     )
                                 )
 
@@ -329,11 +330,11 @@ fun PreviewDetailsPageScreen(){
     DetailsPageScreen(
         rememberNavController(),
         LoginViewModel(),
-        initialFood = FoodName(
+        initialFood = Food(
             R.drawable.friedchicken,
-            name = "Fried Chicken",
-            description = "Food for thought",
-            price = "5.00"
+            title = "Fried Chicken",
+            descAmountCharge = "Food for thought",
+            price = 5.00
         )
     )
 }

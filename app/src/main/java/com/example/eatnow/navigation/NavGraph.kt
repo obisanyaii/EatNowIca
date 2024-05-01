@@ -7,8 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.example.eatnow.ui.theme.FoodList
+import com.example.eatnow.foodList
 import com.example.eatnow.ui.theme.pages.LandingPageActivity
 import com.example.eatnow.ui.theme.pages.login.LoginScreen
 import com.example.eatnow.ui.theme.pages.login.LoginViewModel
@@ -78,7 +77,7 @@ fun SetupNavigationGraph(
         ){
             var index = navController.previousBackStackEntry?.arguments?.getString("index")?.toIntOrNull() ?: 0
             Log.d("TAG arg graph", index.toString())
-            var food = FoodList.foodList.getOrNull(index)
+            var food = foodList.getOrNull(index)
             if (food != null) {
                 DetailsPageScreen(
                     navController,
